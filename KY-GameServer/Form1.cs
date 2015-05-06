@@ -90,6 +90,7 @@ namespace KY_GameServer
                             if(dataByte == (byte)PacketTypes.MOVE)
                             {
                                 updateMovements();
+                                updateList(); //To make the coordinates real-time in the viewer. There's a more efficient way, but.. sleepy right now.
                             }
 
                             break;
@@ -112,7 +113,31 @@ namespace KY_GameServer
         //This function will manage all the movement and coordination across players (notifies other players if someone has moved, to reflect that and stuff) 
         private void updateMovements()
         {
-            
+            //First find the player who made the movement (Querying through all your players is not the most efficient way, I'll fix this later when i get a good base, remind me ok?)
+            Character changedplayer = ConnectedPlayers.Where(f => f.Connection.RemoteUniqueIdentifier == inc.SenderConnection.RemoteUniqueIdentifier).FirstOrDefault();
+
+            //This is interesting for you to look at. I currently only send the updated movement to all players in the same zone HOWEVER
+            //If you only want to update players in a specific range you can perform some square root math function to get the distance between each player and
+            //add an if statement to only send it to players who are in x range. so.. (if (range > 20) -> abort) I can help with that later if you want, remind me.
+
+            changedplayer.Coordinates = new Vector3(inc.ReadFloat(), inc.ReadFloat());
+
+            foreach (Character ch in ConnectedPlayers.Where(f => f.CurrentZone == changedplayer.CurrentZone))
+            {
+                //Don't send the coordinates to yourself, that would be silly unless you want your own movement to be server sided as well
+                if (ch.Connection.RemoteUniqueIdentifier == inc.SenderConnection.RemoteUniqueIdentifier)
+                    continue;
+                
+                NetOutgoingMessage outmsg = Server.CreateMessage();
+                outmsg.Write((byte)PacketTypes.MOVEMENTUPDATE);
+
+                //Send player so players know whos' coordinates to update. You can just send the entire class but that's just so unnecessary..
+                outmsg.Write(changedplayer.Name); //Normally you want to give each player a unique ID (int), lighter to transport and other various reasons. Remind me
+                outmsg.Write(changedplayer.Coordinates.X);
+                outmsg.Write(changedplayer.Coordinates.Y);
+                Server.SendMessage(outmsg, ch.Connection, NetDeliveryMethod.ReliableOrdered, 0);
+                break;
+            }
         }
 
 
@@ -192,7 +217,7 @@ namespace KY_GameServer
                     dataGridView1.Rows.Add(
                         ch.Name, 
                         ch.Connection.RemoteEndpoint.Address, 
-                        ch.Coordinates,
+                        ch.Coordinates.X + "-" + ch.Coordinates.Y,
                         ch.CurrentZone, 
                         ch.Skin, 
                         ch.Connection.AverageRoundtripTime);
@@ -204,7 +229,6 @@ namespace KY_GameServer
         private void removeDisconnectedUser(NetConnection conn)
         {
             ConnectedPlayers.Remove(ConnectedPlayers.Where(f => f.Connection.RemoteUniqueIdentifier == conn.RemoteUniqueIdentifier).FirstOrDefault());
-            updateMovements();
         }
 
         //Simple function that allows us to log activity to our activity textbox, also known as "LET IT BE KNOWN!"
@@ -215,34 +239,38 @@ namespace KY_GameServer
                 textBox1.AppendText(msg + Environment.NewLine);
             }));
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 
-    //Class used for simple functions to keep our main class tidy
-    public static class Misc
+    public class gameObject
     {
-
+        public string Name { get; set; }
+        public Vector3 Coordinates { get; set; }
     }
 
-    class gameObject
-    {
-        public string Name {get; set;}
-        public Point Coordinates { get; set;}
-    }
-
-    class Zone
+    public class Zone
     {
         public string Zones { get; set; }
         public int MaxPlayers { get; set; }
     }
 
-    class Character
+    public class Character
     {
         public string Name { get; set; }
         public string Skin { get; set; }
         public Zones CurrentZone { get; set; }
-        public Point Coordinates { get; set; }
+        public Vector3 Coordinates { get; set; }
         public NetConnection Connection { get; set; }
-        public Character(string name, Point coordinates, string charskin, NetConnection conn)
+        public Character(string name, Vector3 coordinates, string charskin, NetConnection conn)
         {
             Skin = charskin;
             Name = name;
@@ -251,22 +279,42 @@ namespace KY_GameServer
         }
         public Character()
         {
-
+            Coordinates = new Vector3(0, 0);
         }
     }
 
-    enum Zones
+    public enum Zones
     {
         BirdIsland,
         TwinCity,
         Gotham
     }
 
-    enum PacketTypes
+    public enum PacketTypes
     {
         LOGIN,
         MOVE,
+        ZONESWITCH,
         WORLDSTATE,
-        CHAT
+        CHAT,
+        MOVEMENTUPDATE
+    }
+
+    public class Vector3
+    {
+        public Vector3(float x, float y)
+        {
+            X = y;
+            Y = y;
+            Z = 2;
+        }
+        public Vector3()
+        {
+
+        }
+
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
     }
 }

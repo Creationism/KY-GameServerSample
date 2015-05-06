@@ -1,1 +1,12 @@
 G:\Users\Alyssa\Documents\GitHub\KY-GameServerSample\KY-GameServer\bin\Debug\KY-GameServer.exe.config
+G:\Users\Alyssa\Documents\GitHub\KY-GameServerSample\KY-GameServer\bin\Debug\KY-GameServer.exe
+G:\Users\Alyssa\Documents\GitHub\KY-GameServerSample\KY-GameServer\bin\Debug\KY-GameServer.pdb
+G:\Users\Alyssa\Documents\GitHub\KY-GameServerSample\KY-GameServer\bin\Debug\Lidgren.Network.dll
+G:\Users\Alyssa\Documents\GitHub\KY-GameServerSample\KY-GameServer\obj\Debug\KY-GameServer.csprojResolveAssemblyReference.cache
+G:\Users\Alyssa\Documents\GitHub\KY-GameServerSample\KY-GameServer\obj\Debug\KY_GameServer.Form1.resources
+G:\Users\Alyssa\Documents\GitHub\KY-GameServerSample\KY-GameServer\obj\Debug\KY_GameServer.Properties.Resources.resources
+G:\Users\Alyssa\Documents\GitHub\KY-GameServerSample\KY-GameServer\obj\Debug\KY-GameServer.csproj.GenerateResource.Cache
+G:\Users\Alyssa\Documents\GitHub\KY-GameServerSample\KY-GameServer\obj\Debug\KY-GameServer.exe
+G:\Users\Alyssa\Documents\GitHub\KY-GameServerSample\KY-GameServer\obj\Debug\KY-GameServer.pdb
+G:\Users\Alyssa\Documents\GitHub\KY-GameServerSample\KY-GameServer\bin\Debug\KyCoreLib.dll
+G:\Users\Alyssa\Documents\GitHub\KY-GameServerSample\KY-GameServer\bin\Debug\KyCoreLib.pdb

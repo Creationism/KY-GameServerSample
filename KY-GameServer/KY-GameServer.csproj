@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="KyCoreLib">
+      <HintPath>..\KyCoreLib\bin\Debug\KyCoreLib.dll</HintPath>
+    </Reference>
     <Reference Include="Lidgren.Network">
       <HintPath>..\..\..\Visual Studio 2013\Projects\GameServer\ClientsideMovement\ClientsideMovement\bin\x86\Debug\Lidgren.Network.dll</HintPath>
     </Reference>
